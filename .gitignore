@@ -1,0 +1,6 @@
+.secrets/
+*.token
+*_token
+.env
+__pycache__/
+*.pyc
