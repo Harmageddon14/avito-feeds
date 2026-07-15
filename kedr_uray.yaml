@@ -2,9 +2,10 @@ account: "438889381"
 campaign: "kedr-uray-samovyvoz"
 start: "2026-07-16T08:00"
 base_export: "~/avito-feeds/438889381.xlsx"
-out: "~/avito-feeds/438889381.xlsx"
+out: "~/avito-feeds/438889381_feed_kedr_uray.xlsx"
 ads:
-  - title: "Кедр кругляк пиловочник 12 м самовывоз с места"
+  - id: "8742178634"
+    title: "Кедр кругляк пиловочник 12 м самовывоз с места"
     city: "Урай"
     address: "Ханты-Мансийский АО, Урай, ул. Нефтяников, 10"
     price: 2500
