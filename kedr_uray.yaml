@@ -1,6 +1,6 @@
 account: "438889381"
 campaign: "kedr-uray-samovyvoz"
-start: "2026-07-16T08:00"
+start: "2026-07-15T13:40"
 base_export: "~/avito-feeds/438889381.xlsx"
 out: "~/avito-feeds/438889381_feed_kedr_uray.xlsx"
 ads:
