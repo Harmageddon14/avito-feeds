@@ -1,0 +1,588 @@
+<title>Штаб Дениса</title>
+<style>
+  :root {
+    --ground: #eceee4;
+    --surface: #f7f8f2;
+    --surface-2: #eef0e6;
+    --border: #d4d9c6;
+    --text: #1b1f14;
+    --muted: #5d6350;
+    --faint: #878d76;
+    --accent: #9a6b12;
+    --accent-soft: #f0e2c2;
+    --good: #4f8a3f;
+    --hot: #c14226;
+    --moved: #5f7387;
+    --open: #8a9078;
+    --shadow: 0 1px 2px rgba(30,35,20,.06), 0 4px 16px rgba(30,35,20,.05);
+    --mono: ui-monospace, "Cascadia Code", "SF Mono", Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #12140f;
+      --surface: #1b1e17;
+      --surface-2: #23271e;
+      --border: #333a2a;
+      --text: #e9ebe0;
+      --muted: #9aa08a;
+      --faint: #6f755f;
+      --accent: #e0a838;
+      --accent-soft: #3a2f14;
+      --good: #6cae57;
+      --hot: #e06a4b;
+      --moved: #8298ac;
+      --open: #7e8468;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.28);
+    }
+  }
+  :root[data-theme="light"] {
+    --ground: #eceee4; --surface: #f7f8f2; --surface-2: #eef0e6; --border: #d4d9c6;
+    --text: #1b1f14; --muted: #5d6350; --faint: #878d76; --accent: #9a6b12; --accent-soft: #f0e2c2;
+    --good: #4f8a3f; --hot: #c14226; --moved: #5f7387; --open: #8a9078;
+    --shadow: 0 1px 2px rgba(30,35,20,.06), 0 4px 16px rgba(30,35,20,.05);
+  }
+  :root[data-theme="dark"] {
+    --ground: #12140f; --surface: #1b1e17; --surface-2: #23271e; --border: #333a2a;
+    --text: #e9ebe0; --muted: #9aa08a; --faint: #6f755f; --accent: #e0a838; --accent-soft: #3a2f14;
+    --good: #6cae57; --hot: #e06a4b; --moved: #8298ac; --open: #7e8468;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.28);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--ground); color: var(--text);
+    font-family: var(--sans); line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 18px 16px 64px; }
+
+  /* Header */
+  header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .brand { display: flex; align-items: baseline; gap: 10px; }
+  .brand h1 { font-size: 1.5rem; margin: 0; letter-spacing: -.02em; font-weight: 700; }
+  .brand .mark { color: var(--accent); font-size: 1.35rem; }
+  .updated { font-family: var(--mono); font-size: .74rem; color: var(--faint); }
+
+  /* Stat tiles */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 8px; }
+  .tile {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 12px 12px 10px; box-shadow: var(--shadow); min-width: 0;
+  }
+  .tile .num { font-size: 1.7rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.02em; line-height: 1; }
+  .tile .lbl { font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-top: 6px; }
+  .tile.hot .num { color: var(--hot); }
+  .tile.good .num { color: var(--good); }
+  @media (max-width: 480px) { .stats { grid-template-columns: repeat(2, 1fr); } .brand h1 { font-size: 1.3rem; } }
+
+  /* Горит strip */
+  .burn { background: color-mix(in srgb, var(--hot) 10%, var(--surface)); border: 1px solid color-mix(in srgb, var(--hot) 32%, var(--border)); border-radius: 12px; padding: 11px 14px; margin: 10px 0 18px; }
+  .burn h2 { font-size: .72rem; text-transform: uppercase; letter-spacing: .07em; color: var(--hot); margin: 0 0 7px; display: flex; align-items: center; gap: 6px; }
+  .burn ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .burn li { display: flex; justify-content: space-between; gap: 12px; font-size: .9rem; }
+  .burn .dl { font-family: var(--mono); font-size: .78rem; color: var(--hot); white-space: nowrap; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 4px; margin-bottom: 18px; position: sticky; top: 8px; z-index: 5; }
+  .tabs button {
+    flex: 1; appearance: none; border: 0; background: transparent; color: var(--muted);
+    font-family: var(--sans); font-size: .9rem; font-weight: 600; padding: 9px 6px; border-radius: 8px; cursor: pointer;
+    transition: background .15s, color .15s;
+  }
+  .tabs button[aria-selected="true"] { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+  .tabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .panel { display: none; }
+  .panel.active { display: block; animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .panel.active, .burn li { animation: none; } * { transition: none !important; } }
+
+  .sec-title { font-size: .74rem; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin: 18px 0 10px; }
+  .sec-title:first-child { margin-top: 0; }
+
+  /* Timeline */
+  .timeline { display: flex; flex-direction: column; }
+  .tl-row { display: grid; grid-template-columns: 52px 18px 1fr; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); align-items: start; }
+  .tl-row:last-child { border-bottom: 0; }
+  .tl-time { font-family: var(--mono); font-size: .82rem; color: var(--muted); padding-top: 1px; font-variant-numeric: tabular-nums; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; margin-top: 5px; background: var(--open); flex: none; }
+  .dot.done { background: var(--good); }
+  .dot.hot { background: var(--hot); box-shadow: 0 0 0 4px color-mix(in srgb, var(--hot) 22%, transparent); animation: pulse 1.8s infinite; }
+  .dot.moved { background: var(--moved); }
+  @keyframes pulse { 50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--hot) 6%, transparent); } }
+  .tl-body .task { font-size: .95rem; }
+  .tl-row.done .task { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--faint); }
+  .note { font-size: .78rem; color: var(--faint); margin-top: 2px; }
+
+  /* Main-of-day cards */
+  .cards { display: flex; flex-direction: column; gap: 8px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 11px;
+    padding: 11px 13px; box-shadow: var(--shadow); display: flex; gap: 11px; align-items: start;
+  }
+  .card .dot { margin-top: 6px; }
+  .card .main { flex: 1; min-width: 0; }
+  .card .task { font-size: .93rem; font-weight: 500; }
+  .card.done .task { color: var(--muted); text-decoration: line-through; }
+  .chip { display: inline-block; font-size: .68rem; padding: 2px 8px; border-radius: 20px; background: var(--surface-2); color: var(--muted); border: 1px solid var(--border); margin-top: 5px; font-weight: 600; }
+
+  /* Week grid */
+  .week { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(140px, 1fr); gap: 8px; overflow-x: auto; padding-bottom: 6px; scroll-snap-type: x proximity; }
+  .day { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 10px; scroll-snap-align: start; box-shadow: var(--shadow); }
+  .day.today { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 7%, var(--surface)); }
+  .day h3 { margin: 0 0 8px; font-size: .82rem; display: flex; justify-content: space-between; align-items: baseline; }
+  .day h3 .d { color: var(--faint); font-family: var(--mono); font-size: .72rem; font-weight: 400; }
+  .day.today h3 .wd { color: var(--accent); }
+  .day ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .day li { font-size: .8rem; padding: 5px 8px; border-radius: 7px; background: var(--surface-2); border-left: 3px solid var(--open); }
+  .day li.done { border-left-color: var(--good); color: var(--muted); text-decoration: line-through; }
+  .day li.hot { border-left-color: var(--hot); }
+  .day .empty { font-size: .78rem; color: var(--faint); font-style: italic; }
+
+  /* Long-term projects */
+  .proj { background: var(--surface); border: 1px solid var(--border); border-radius: 13px; box-shadow: var(--shadow); margin-bottom: 10px; overflow: hidden; }
+  .proj > summary { list-style: none; cursor: pointer; padding: 13px 15px; display: block; }
+  .proj > summary::-webkit-details-marker { display: none; }
+  .proj-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  .proj-head h3 { margin: 0; font-size: 1rem; letter-spacing: -.01em; }
+  .proj-status { font-size: .68rem; text-transform: uppercase; letter-spacing: .05em; padding: 2px 8px; border-radius: 20px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; font-weight: 700; }
+  .proj .summ { font-size: .85rem; color: var(--muted); margin-top: 6px; }
+  .prog { margin-top: 10px; display: flex; align-items: center; gap: 10px; }
+  .bar { flex: 1; height: 7px; background: var(--surface-2); border-radius: 20px; overflow: hidden; }
+  .bar > i { display: block; height: 100%; background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 70%, transparent), var(--accent)); border-radius: 20px; }
+  .prog .pct { font-family: var(--mono); font-size: .76rem; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 34px; text-align: right; }
+  .prog .dl { font-family: var(--mono); font-size: .74rem; color: var(--faint); }
+  .expand { font-size: .74rem; color: var(--accent); margin-top: 10px; font-weight: 600; }
+  .proj[open] .expand::after { content: " ▲"; }
+  .proj:not([open]) .expand::after { content: " ▼"; }
+
+  .facets { padding: 0 15px 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 18px; border-top: 1px solid var(--border); margin-top: 2px; padding-top: 13px; }
+  @media (max-width: 520px) { .facets { grid-template-columns: 1fr; } }
+  .facet h4 { margin: 0 0 6px; font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+  .facet ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .facet li { font-size: .84rem; padding-left: 16px; position: relative; }
+  .facet li::before { position: absolute; left: 0; top: 0; }
+  .f-note li::before { content: "•"; color: var(--faint); }
+  .f-prob li::before { content: "⚠"; color: var(--hot); font-size: .72rem; top: 1px; }
+  .f-sol  li::before { content: "→"; color: var(--good); }
+  .f-plus li::before { content: "▲"; color: var(--good); font-size: .66rem; top: 2px; }
+  .f-minus li::before { content: "▼"; color: var(--hot); font-size: .66rem; top: 2px; }
+  .facet.wide { grid-column: 1 / -1; }
+
+  footer { text-align: center; color: var(--faint); font-size: .74rem; margin-top: 26px; }
+  footer .win { color: var(--good); }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <span class="mark">🌲</span>
+      <h1>Штаб Дениса</h1>
+    </div>
+    <div class="updated" id="updated"></div>
+  </header>
+
+  <div class="stats" id="stats"></div>
+  <div class="burn" id="burn"></div>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-tab="day">День</button>
+    <button role="tab" aria-selected="false" data-tab="week">Неделя</button>
+    <button role="tab" aria-selected="false" data-tab="long">Долгосрок</button>
+  </div>
+
+  <section class="panel active" id="day"></section>
+  <section class="panel" id="week"></section>
+  <section class="panel" id="long"></section>
+
+  <footer id="footer"></footer>
+</div>
+
+<script>
+const D = /*DATA*/{
+  "_комментарий": "Источник правды для ВИЗУАЛЬНОЙ панели ассистента. Правит ассистент, когда меняется план/состояние. После правки — пересобрать HTML и переопубликовать ссылку (см. Ассистент/панель-ссылка.txt и _Правила ассистента.md). Статусы дел: done | open | hot | moved.",
+  "обновлено": "2026-07-22 19:25",
+  "владелец": "Денис",
+  "состояние": {
+    "слив_стрик": 0,
+    "закрыто_сегодня": 18,
+    "слито_сегодня": 0,
+    "победы": [
+      "22.07 — расчистил доску: закрыл все хвосты 10–13.07, начал с чистого листа"
+    ],
+    "горит": [
+      { "текст": "Отнести телефон в Яндекс — крайний срок 20:30", "дедлайн": "2026-07-22 20:30" },
+      { "текст": "Брянск — итоговый отчёт по сельхозкам", "дедлайн": "2026-07-22" },
+      { "текст": "Доступ к кабинету Тинькофф", "дедлайн": "2026-07-25" }
+    ]
+  },
+  "день": {
+    "дата": "2026-07-22",
+    "таймлайн": [
+      { "время": "11:00", "дело": "МФЦ", "статус": "done" },
+      { "время": "11:20", "дело": "Офис → Орбизон: переделать выкладку объявлений", "статус": "done" },
+      { "время": "13:00", "дело": "Со второго аккаунта продвинуть/оплатить объяву по телефону", "статус": "open" },
+      { "время": "14:30", "дело": "Кострома — звонок в Росимущество (заказчик вырубки)", "статус": "moved", "заметка": "номер оказался неверный → перенос на 23.07 ~13:00" },
+      { "время": "19:45", "дело": "Отнести телефон в Яндекс (крайний срок 20:30)", "статус": "hot" }
+    ],
+    "главное": [
+      { "дело": "Крипта — выложить ролик", "статус": "moved", "проект": "Крипта", "заметка": "Даша домонтирует → завтра утром" },
+      { "дело": "Брянск — итоговый отчёт по сельхозкам", "статус": "hot", "проект": "Сельхозка" },
+      { "дело": "Сельхозка — критерии отбора: какую берём / какую нет", "статус": "open", "проект": "Сельхозка" },
+      { "дело": "Сельхозка — запустить Claude-бота в Авито на поиск объявлений", "статус": "open", "проект": "Сельхозка" },
+      { "дело": "Кострома — решить участие в торгах, позвонить", "статус": "open", "проект": "Кострома" },
+      { "дело": "Тинькофф — получить/обосновать доступ к кабинету", "статус": "open", "проект": "Тинькофф" },
+      { "дело": "Илюхе — настроить РусТендер (слова поиска + регионы)", "статус": "open", "проект": "РусТендер" },
+      { "дело": "Новое направление — объявление об услугах по проектам", "статус": "open", "проект": "Проекты" },
+      { "дело": "Тельховская земля — проанализировать отчёты", "статус": "open", "проект": "Земля" }
+    ]
+  },
+  "неделя": [
+    { "дата": "2026-07-22", "день": "Пн", "сегодня": true, "дела": [
+      { "текст": "МФЦ + Орбизон", "статус": "done" },
+      { "текст": "Брянск сельхозки — отчёт", "статус": "hot" },
+      { "текст": "Телефон в Яндекс до 20:30", "статус": "hot" }
+    ] },
+    { "дата": "2026-07-23", "день": "Вт", "дела": [
+      { "текст": "09:30 Крипта — выложить ролик", "статус": "open" },
+      { "текст": "11:00 Тинькофф — звонок по доступу", "статус": "open" },
+      { "текст": "13:00 Кострома — Росимущество", "статус": "open" }
+    ] },
+    { "дата": "2026-07-24", "день": "Ср", "дела": [
+      { "текст": "Тинькофф — дедлайн доступа близко", "статус": "hot" }
+    ] },
+    { "дата": "2026-07-25", "день": "Чт", "дела": [
+      { "текст": "Тинькофф — крайний срок доступа", "статус": "hot" }
+    ] },
+    { "дата": "2026-07-26", "день": "Пт", "дела": [] },
+    { "дата": "2026-07-27", "день": "Сб", "дела": [] },
+    { "дата": "2026-07-28", "день": "Вс", "дела": [] }
+  ],
+  "долгосрок": [
+    {
+      "проект": "ЯНАО — лоты (выиграны)",
+      "статус": "в работе",
+      "прогресс": 40,
+      "дедлайн": "2026 Q2 — завершить рубку",
+      "сводка": "3 лота МТУ Росимущества, Пуровский р-н, Ноябрьское л-во. Готовим заготовку и логистику.",
+      "нюансы": [
+        "Лот №3 — 5 125 м³; Лот №4 — 5 743 м³; Лот №5 — 3 176 м³",
+        "Дороги только по зимникам"
+      ],
+      "проблемы": [
+        "Вывоз возможен только зимой — окно ограничено",
+        "Срок завершения рубки — 2 квартал 2026"
+      ],
+      "решения": [
+        "Планировать логистику строго под зимник",
+        "Держать сроки договоров и заготовки"
+      ],
+      "плюсы": [
+        "Крупные объёмы, каждый лот >500 м³",
+        "Низкая цена входа"
+      ],
+      "минусы": [
+        "Труднодоступность региона",
+        "Жёсткая сезонность вывоза"
+      ]
+    },
+    {
+      "проект": "Иркутск — лоты (выиграны)",
+      "статус": "проверить подписание",
+      "прогресс": 55,
+      "дедлайн": "~2026-06-25 (подписание договоров)",
+      "сводка": "ООО «Новатор», Иркутский аукцион. Лот №1 — 2 141 м³, Лот №4 — 1 504 м³.",
+      "нюансы": [
+        "Представитель по Иркутску — Стрыгин Николай Андреевич"
+      ],
+      "проблемы": [
+        "Дедлайн подписания уже в прошлом — нужен актуальный статус"
+      ],
+      "решения": [
+        "Проверить, подписаны ли договоры, зафиксировать статус"
+      ],
+      "плюсы": [
+        "Объёмы проходят порог"
+      ],
+      "минусы": [
+        "Риск по срокам подписания"
+      ]
+    },
+    {
+      "проект": "Кострома — торги",
+      "статус": "под вопросом",
+      "прогресс": 20,
+      "дедлайн": "решить участие на неделе",
+      "сводка": "Решаем, лезем ли в торги. Пока подтверждения наличия древесины нет.",
+      "нюансы": [
+        "ОГКУ «Межевское лесничество»: по координатам древесины НЕТ, лесничий не поможет"
+      ],
+      "проблемы": [
+        "Номер Росимущества оказался неверным — не дозвонились",
+        "Без подтверждения наличия леса в торги не лезем"
+      ],
+      "решения": [
+        "Найти верный номер продавца (Росимущество)",
+        "Узнать заказчика вырубки",
+        "Запросить точные координаты выделов, пробить по Яндекс.Картам"
+      ],
+      "плюсы": [
+        "Потенциально ещё один лот"
+      ],
+      "минусы": [
+        "Высокий риск пустышки"
+      ]
+    },
+    {
+      "проект": "Сельхозка — новое направление",
+      "статус": "запускаем",
+      "прогресс": 25,
+      "дедлайн": "отчёт Брянск — сегодня",
+      "сводка": "Скупка/оценка сельхозучастков и уже вырубленного леса. Нужны критерии и авто-поиск.",
+      "нюансы": [
+        "Критерии: порог / товарность / плечо / сбыт дров",
+        "Источники: Гугл-карты + спутник + кадастр"
+      ],
+      "проблемы": [
+        "Нет готовых критериев отбора",
+        "Ручной поиск объявлений медленный"
+      ],
+      "решения": [
+        "Свести итоговый отчёт по сельхозкам (Брянск)",
+        "Запустить Claude-бота в Авито на поиск"
+      ],
+      "плюсы": [
+        "Новый поток лотов"
+      ],
+      "минусы": [
+        "Направление ещё не обкатано"
+      ]
+    },
+    {
+      "проект": "Тинькофф — доступ к кабинету",
+      "статус": "горит",
+      "прогресс": 30,
+      "дедлайн": "2026-07-25",
+      "сводка": "Получить/обосновать доступ к кабинету. Дедлайн близко.",
+      "нюансы": [],
+      "проблемы": [
+        "Доступа пока нет, дедлайн до ~24–25.07"
+      ],
+      "решения": [
+        "Позвонить, получить или обосновать доступ (план на 23.07 11:00)"
+      ],
+      "плюсы": [],
+      "минусы": [
+        "Жёсткий срок"
+      ]
+    },
+    {
+      "проект": "Крипта — контент",
+      "статус": "в работе",
+      "прогресс": 50,
+      "дедлайн": "ролик — завтра утром",
+      "сводка": "Серия роликов. Даша монтирует, Денис выкладывает.",
+      "нюансы": [
+        "Разделение: Даша — монтаж, Денис — выкладка"
+      ],
+      "проблемы": [
+        "Выкладка первого ролика уже раз перенесена"
+      ],
+      "решения": [
+        "Выложить ролик 23.07 в 09:30, как домонтируют"
+      ],
+      "плюсы": [
+        "Контент готовится системно"
+      ],
+      "минусы": [
+        "Зависимость от монтажа"
+      ]
+    },
+    {
+      "проект": "Новое направление — услуги по проектам",
+      "статус": "идея → оформление",
+      "прогресс": 10,
+      "дедлайн": "оформить объявление",
+      "сводка": "Проект мелиорации, проект освоения лесов, бизнес-планы, ТЭО, расчёт тарифов (котельные и т.д.).",
+      "нюансы": [],
+      "проблемы": [
+        "Пока только идея, нет упаковки услуги"
+      ],
+      "решения": [
+        "Собрать объявление об услугах по проектам"
+      ],
+      "плюсы": [
+        "Диверсификация дохода"
+      ],
+      "минусы": [
+        "Нужна проработка тарифов"
+      ]
+    },
+    {
+      "проект": "Avito — мультиаккаунт",
+      "статус": "на потоке",
+      "прогресс": 70,
+      "дедлайн": "постоянно",
+      "сводка": "4 аккаунта по федеральным округам: ПромЛес, Урал Лес, Таёжные ресурсы, Русский лес.",
+      "нюансы": [
+        "Новые объявы — всегда размещение BBL",
+        "Живые объявы не трогать / не перезаливать"
+      ],
+      "проблемы": [
+        "Фид автозагрузки всегда = ВСЕ активные, иначе снос объявлений"
+      ],
+      "решения": [
+        "Правки — по месту в канонический promles.xlsx",
+        "Рассинхрон ловить по API (GET /core/v1/items)"
+      ],
+      "плюсы": [
+        "Охват по всем округам"
+      ],
+      "минусы": [
+        "Хрупкость автозагрузки"
+      ]
+    }
+  ]
+}
+/*END*/;
+
+const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+
+// Header
+document.getElementById('updated').textContent = 'обновлено ' + (D.обновлено || '');
+
+// Stats
+const st = D.состояние || {};
+const stats = [
+  { num: st.слив_стрик ?? 0, lbl: 'Слив-стрик', cls: (st.слив_стрик > 0 ? 'hot' : 'good') },
+  { num: st.закрыто_сегодня ?? 0, lbl: 'Закрыто', cls: 'good' },
+  { num: st.слито_сегодня ?? 0, lbl: 'Слито', cls: (st.слито_сегодня > 0 ? 'hot' : '') },
+  { num: (st.горит || []).length, lbl: 'Горит', cls: ((st.горит||[]).length ? 'hot' : '') },
+];
+const statsEl = document.getElementById('stats');
+stats.forEach(s => {
+  const t = el('div', 'tile ' + s.cls);
+  t.append(el('div', 'num', esc(s.num)), el('div', 'lbl', esc(s.lbl)));
+  statsEl.append(t);
+});
+
+// Burn strip
+const burnEl = document.getElementById('burn');
+const burn = st.горит || [];
+if (burn.length) {
+  burnEl.append(el('h2', null, '🔥 Горит прямо сейчас'));
+  const ul = el('ul');
+  burn.forEach(b => {
+    const li = el('li');
+    li.append(el('span', null, esc(b.текст)));
+    if (b.дедлайн) li.append(el('span', 'dl', esc(b.дедлайн)));
+    ul.append(li);
+  });
+  burnEl.append(ul);
+} else { burnEl.style.display = 'none'; }
+
+// ---- DAY ----
+const day = D.день || {};
+const dayEl = document.getElementById('day');
+dayEl.append(el('div', 'sec-title', '⏰ По времени · ' + esc(day.дата || '')));
+const tl = el('div', 'timeline');
+(day.таймлайн || []).forEach(r => {
+  const row = el('div', 'tl-row ' + r.статус);
+  row.append(el('div', 'tl-time', esc(r.время || '')));
+  row.append(el('div', 'dot ' + r.статус));
+  const body = el('div', 'tl-body');
+  body.append(el('div', 'task', esc(r.дело)));
+  if (r.заметка) body.append(el('div', 'note', esc(r.заметка)));
+  row.append(body);
+  tl.append(row);
+});
+dayEl.append(tl);
+dayEl.append(el('div', 'sec-title', '🎯 Главное на день'));
+const cards = el('div', 'cards');
+(day.главное || []).forEach(c => {
+  const card = el('div', 'card ' + c.статус);
+  card.append(el('div', 'dot ' + c.статус));
+  const main = el('div', 'main');
+  main.append(el('div', 'task', esc(c.дело)));
+  if (c.заметка) main.append(el('div', 'note', esc(c.заметка)));
+  const meta = el('div');
+  if (c.проект) meta.append(el('span', 'chip', esc(c.проект)));
+  main.append(meta);
+  card.append(main);
+  cards.append(card);
+});
+dayEl.append(cards);
+
+// ---- WEEK ----
+const weekEl = document.getElementById('week');
+weekEl.append(el('div', 'sec-title', '🗓 Неделя'));
+const grid = el('div', 'week');
+(D.неделя || []).forEach(d => {
+  const col = el('div', 'day' + (d.сегодня ? ' today' : ''));
+  col.append(el('h3', null, '<span class="wd">' + esc(d.день) + '</span><span class="d">' + esc((d.дата||'').slice(5)) + '</span>'));
+  const ul = el('ul');
+  if ((d.дела || []).length) {
+    d.дела.forEach(x => ul.append(el('li', x.статус, esc(x.текст))));
+  } else {
+    ul.append(el('li', 'empty', '—'));
+  }
+  col.append(ul);
+  grid.append(col);
+});
+weekEl.append(grid);
+
+// ---- LONG-TERM ----
+const longEl = document.getElementById('long');
+longEl.append(el('div', 'sec-title', '🌲 Проекты и долгосрок'));
+const facetDefs = [
+  ['нюансы', 'Нюансы', 'f-note'],
+  ['проблемы', 'Проблемы', 'f-prob'],
+  ['решения', 'Решения', 'f-sol'],
+  ['плюсы', 'Плюсы', 'f-plus'],
+  ['минусы', 'Минусы', 'f-minus'],
+];
+(D.долгосрок || []).forEach((p, i) => {
+  const det = el('details', 'proj'); if (i === 0) det.open = true;
+  const sum = el('summary');
+  const head = el('div', 'proj-head');
+  head.append(el('h3', null, esc(p.проект)));
+  if (p.статус) head.append(el('span', 'proj-status', esc(p.статус)));
+  sum.append(head);
+  if (p.сводка) sum.append(el('div', 'summ', esc(p.сводка)));
+  const prog = el('div', 'prog');
+  const bar = el('div', 'bar'); const fill = el('i'); fill.style.width = (p.прогресс||0) + '%'; bar.append(fill);
+  prog.append(bar, el('span', 'pct', (p.прогресс||0) + '%'));
+  if (p.дедлайн) prog.append(el('span', 'dl', '⏳ ' + esc(p.дедлайн)));
+  sum.append(prog);
+  sum.append(el('div', 'expand', 'детали'));
+  det.append(sum);
+
+  const facets = el('div', 'facets');
+  facetDefs.forEach(([key, label, cls]) => {
+    const arr = p[key] || [];
+    if (!arr.length) return;
+    const f = el('div', 'facet ' + (key === 'решения' || key === 'нюансы' ? 'wide' : ''));
+    f.append(el('h4', null, esc(label)));
+    const ul = el('ul', cls);
+    arr.forEach(x => ul.append(el('li', null, esc(x))));
+    f.append(ul);
+    facets.append(f);
+  });
+  det.append(facets);
+  longEl.append(det);
+});
+
+// Footer — wins
+const foot = document.getElementById('footer');
+const wins = st.победы || [];
+if (wins.length) foot.innerHTML = '🏆 <span class="win">' + esc(wins[0]) + '</span>';
+
+// Tabs
+const tabs = [...document.querySelectorAll('.tabs button')];
+tabs.forEach(btn => btn.addEventListener('click', () => {
+  tabs.forEach(b => b.setAttribute('aria-selected', b === btn));
+  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === btn.dataset.tab));
+}));
+</script>
